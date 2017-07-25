@@ -1,9 +1,13 @@
 
     </div>
     <!-- /#wrapper -->
-		<footer>
-		<b><p class="text-center" > &copy; All right reserved</p></b>
-	</footer>
+	<footer class="footer">
+      <div class="container">
+		  <b><p class="text-center" > &copy; All right reserved</p></b>
+      </div>
+    </footer>
+		
+	
     <!-- jQuery -->
     <script src="js/jquery.js"></script>
 
