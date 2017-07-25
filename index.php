@@ -21,7 +21,7 @@
                 <?php 
 					include('common/small_boxes.php');
 				?>
-                
+                <div id="page-wrapper"></div>
                 <!-- /.row -->
 
             </div>

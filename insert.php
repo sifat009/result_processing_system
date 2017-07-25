@@ -1,6 +1,42 @@
+<?php
+	include('include/db.php');
+	$dept = $_REQUEST['dept'];
+	
+	if(isset($_REQUEST['submit'])) {
+		$reg_no = $_REQUEST['reg_no'];
+		$semester = $_REQUEST['semester'];
+		$courses = [$_REQUEST['course_id1'],$_REQUEST['course_id2'],$_REQUEST['course_id3'],$_REQUEST['course_id4'],$_REQUEST['course_id5']];
+		$credits = [$_REQUEST['credit1'],$_REQUEST['credit2'],$_REQUEST['credit3'],$_REQUEST['credit4'],$_REQUEST['credit5']];
+		$grades = [$_REQUEST['grade1'],$_REQUEST['grade2'],$_REQUEST['grade3'],$_REQUEST['grade4'],$_REQUEST['grade5']];
+		$j = 1;
+		while($j < count($courses)){
+			$query = "INSERT INTO courses ( reg_no, dept_name, course_id, credit, grade, semester) VALUES ($reg_no, '$dept', '$courses[$j]', $credits[$j], $grades[$j], '$semester')";
+			$statement = $db->prepare($query);
+			$result = $statement->execute() or die("Couldn't Insert");
+			$j++;
+		}
+		$total_credits = array_sum($credits);
+		$total_cg = 0;
+		for($i = 0; $i < count($credits); $i++) {
+			$total_cg += $credits[$i] * $grades[$i]; 
+		}
+		$gpa = round(($total_cg / $total_credits), 2);
+		$cgpa;
+		if($semester == '8th'){
+			// count CGPA
+		}else {
+			$cgpa = 'Not completed yet';
+			$query = "INSERT INTO results( reg_no, cgpa, gpa, semester) VALUES ($reg_no, '$cgpa', $gpa, '$semester')";
+			$statement = $db->prepare($query);
+			$statement->execute() or die("Connection Error");
+		}
+		
+	}
+?>
+			
+			
 			<?php
 				include('common/header.php');
-				$dept = $_REQUEST['dept'];
 				$course_number = 5;
 
 			?>
@@ -18,7 +54,7 @@
 					include('common/page_heading.php');
 				?>
                 <!-- /.row -->
-                <form action="#" method="post">
+                <form action="" method="post">
                 <div class="col-lg-12">
 					<div class="form-group row">
 					  <label for="reg_no" class="col-2 col-form-label">Student Registration No :</label>
@@ -51,44 +87,50 @@
 						<tbody>
 							<tr>
 								<td>
-									<div class="form-group row <?= ($dept == 'cse' ) ? '' :'no_display'?>" >
+									<?php if( $dept == 'cse'): ?>
+										<div class="form-group row" >
 
-										<select class="form-control" name="course_id" id="course_id" >
-										  <option value="cse101" >CSE_101</option>
-										  <option value="cse102" >CSE_102</option>
-										  <option value="cse103" >CSE_103</option>
-										  <option value="cse104" >CSE_104</option>
-										  <option value="cse105" >CSE_105</option>
-										</select>
-									</div>
+											<select class="form-control" name="course_id<?= $i+1 ?>" id="course_id" >
+											  <option value="cse101" >CSE_101</option>
+											  <option value="cse102" >CSE_102</option>
+											  <option value="cse103" >CSE_103</option>
+											  <option value="cse104" >CSE_104</option>
+											  <option value="cse105" >CSE_105</option>
+											</select>
+										</div>
+									<?php endif; ?>
+									
+									<?php if( $dept == 'bba'): ?>
+										<div class="form-group row " >
 
-									<div class="form-group row <?= ($dept == 'bba' ) ? '' :'no_display'?>" >
+											<select class="form-control" name="course_id<?= $i+1 ?>" id="course_id">
+											  <option value="bba101" >BBA_101</option>
+											  <option value="bba102" >BBA_102</option>
+											  <option value="bba103" >BBA_103</option>
+											  <option value="bba104" >BBA_104</option>
+											  <option value="bba105" >BBA_105</option>
+											</select>
+										</div>
+									<?php endif; ?>
+									
+									<?php if( $dept == 'ece'): ?>
+										<div class="form-group row " >
 
-										<select class="form-control" name="course_id" id="course_id">
-										  <option value="bba101" >BBA_101</option>
-										  <option value="bba102" >BBA_102</option>
-										  <option value="bba103" >BBA_103</option>
-										  <option value="bba104" >BBA_104</option>
-										  <option value="bba105" >BBA_105</option>
-										</select>
-									</div>
-
-									<div class="form-group row <?= ($dept == 'ece' ) ? '' :'no_display'?>" >
-
-										<select class="form-control" name="course_id" id="course_id">
-										  <option value="ece101" >ECE_101</option>
-										  <option value="ece102" >ECE_102</option>
-										  <option value="ece103" >ECE_103</option>
-										  <option value="ece104" >ECE_104</option>
-										  <option value="ece105" >ECE_105</option>
-										</select>
-									</div>
+											<select class="form-control" name="course_id<?= $i+1 ?>" id="course_id">
+											  <option value="ece101" >ECE_101</option>
+											  <option value="ece102" >ECE_102</option>
+											  <option value="ece103" >ECE_103</option>
+											  <option value="ece104" >ECE_104</option>
+											  <option value="ece105" >ECE_105</option>
+											</select>
+										</div>
+									<?php endif; ?>
 								</td>
 								<td></td>
 								<td>
 									<div class="form-group row">
 
-									  <select class="form-control" name="credit" id="credit">
+									  <select class="form-control" name="credit<?= $i+1 ?>" id="credit">
 
 										  <option value="1.5" >1.5</option>
 										  <option value="2" >2</option>
@@ -101,7 +143,7 @@
 								<td>
 									<div class="form-group row">
 
-									  <select class="form-control" name="grade" id="grade">
+									  <select class="form-control" name="grade<?= $i+1 ?>" id="grade">
 
 										  <option value="4" >A+</option>
 										  <option value="3.75" >A</option>
