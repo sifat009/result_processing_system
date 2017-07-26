@@ -21,9 +21,45 @@
 			$total_cg += $credits[$i] * $grades[$i]; 
 		}
 		$gpa = round(($total_cg / $total_credits), 2);
-		$cgpa;
+		
 		if($semester == '8th'){
-			// count CGPA
+			$query = "INSERT INTO results( reg_no, gpa, semester) VALUES ($reg_no, $gpa, '$semester')";
+			$statement = $db->prepare($query);
+			$statement->execute() or die("Connection Error");
+			
+			$query1 = "SELECT SUM(credit) FROM courses WHERE reg_no = $reg_no GROUP BY semester";
+			$stmt = $db->prepare($query1);
+			$stmt->execute() or die("Connection Error");
+			$credit_output = $stmt->fetchAll(PDO::FETCH_ASSOC);
+			
+			$q = "SELECT gpa FROM results WHERE reg_no= $reg_no GROUP BY semester";
+			$st = $db->prepare($q);
+			$st->execute() or die("Connection error");
+			$gpa_output = $st->fetchAll(PDO::FETCH_ASSOC);
+			
+			$total_credit = 0;
+			$total_gpa = 0;
+			
+			foreach($credit_output as $c){
+				$total_credit += $c['SUM(credit)'];
+			}
+			
+			for($i = 0; $i < count($credit_output); $i++){
+				$total_gpa += ($gpa_output[$i]['gpa'] * $credit_output[$i]['SUM(credit)'] ); 
+			}
+			
+			$cgpa = round($total_gpa/$total_credit, 2);
+			
+			$qu = "UPDATE results SET cgpa = $cgpa WHERE reg_no = $reg_no";
+			$s = $db->prepare($qu);
+			$s->execute() or die("Connnection Error");
+			
+			
+//			echo "<pre>";
+//			print_r($output[0]['SUM(credit)']);
+//			print_r($gpa_output[0]['gpa']);
+//			echo "</pre>";
+			
 		}else {
 			$cgpa = 'Not completed yet';
 			$query = "INSERT INTO results( reg_no, cgpa, gpa, semester) VALUES ($reg_no, '$cgpa', $gpa, '$semester')";
