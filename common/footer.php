@@ -13,6 +13,7 @@
 
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
+    <script src="js/myJs.js" ></script>
 
 </body>
 

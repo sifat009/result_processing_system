@@ -31,6 +31,10 @@
 			$statement->execute() or die("Connection Error");
 		}
 		
+		$query = "INSERT INTO students(reg_no, semester, dept_name) VALUES ($reg_no, '$semester', '$dept')";
+		$statement = $db->prepare($query);
+		$statement->execute() or die("Coundn't connect");
+		
 	}
 ?>
 			

@@ -1,3 +1,24 @@
+<?php
+	include('include/db.php');
+	if(isset($_REQUEST['dept'])){
+		$dept = $_REQUEST['dept'];
+		$query = "SELECT * FROM students JOIN results USING (reg_no, semester) WHERE dept_name = '$dept' ";
+	} else {
+		$query = "SELECT * FROM students JOIN results USING (reg_no, semester) ";	
+	}
+	
+	$statement = $db->prepare($query);
+	$statement->execute() or die("Couldn't Connect");
+	if($statement->execute()) {
+		$results = $statement->fetchAll(PDO::FETCH_ASSOC);
+	}
+
+	
+	
+
+
+
+?>			
 			<?php
 				include('common/header.php');		
 			?>
@@ -21,51 +42,28 @@
 						<tr>
 						  <th>#</th>
 						  <th>Reg No.</th>
-						  <th>Name</th>
 						  <th>Department</th>
 						  <th>Semester</th>
+						  <th>GPA</th>
 						  <th>CGPA</th>
 						  <th>Action</th>
 						</tr>
 					  </thead>
 					  <tbody>
+					  	<?php for($i = 0; $i < count($results); $i++): ?>
 						<tr>
-						  <th scope="row">1</th>
-						  <td>1422</td>
-						  <td>Otto</td>
-						  <td>CSE</td>
-						  <td>4th</td>
-						  <td>3.00</td>
+						  <th scope="row"><?= $i+1 ?></th>
+						  <td><?= $results[$i]['reg_no'] ?></td>
+						  <td><?= $results[$i]['dept_name'] ?></td>
+						  <td><?= $results[$i]['semester'] ?></td>
+						  <td><?= $results[$i]['gpa'] ?></td>
+						  <td><?= $results[$i]['cgpa'] ?></td>
 						  <td>
-						  	<a href="edit.php"><i name="edit"  class="fa fa-pencil btn btn-warning" > Edit</i></a>
-						  	<a href="delete.php"><i name="delete"  class="fa fa-trash-o btn btn-danger" > Delete</i></a>
+						  	<a href="edit.php?reg_no=<?= $results[$i]['reg_no'] ?>"><i name="edit"  class="fa fa-pencil btn btn-warning" > Edit</i></a>
+						  	<a onclick="return confirmDelete()" href="delete.php?reg_no=<?= $results[$i]['reg_no'] ?>"  ><i name="delete"  class="fa fa-trash-o btn btn-danger" > Delete</i></a>
 						  </td>
 						</tr>
-						<tr>
-						  <th scope="row">1</th>
-						  <td>1422</td>
-						  <td>Otto</td>
-						  <td>CSE</td>
-						  <td>4th</td>
-						  <td>3.00</td>
-						  <td>
-						  	<a href="edit.php"><i name="edit"  class="fa fa-pencil btn btn-warning" > Edit</i></a>
-						  	<a href="delete.php"><i name="delete"  class="fa fa-trash-o btn btn-danger" > Delete</i></a>
-						  </td>
-						</tr>
-						<tr>
-						  <th scope="row">1</th>
-						  <td>1422</td>
-						  <td>Otto</td>
-						  <td>CSE</td>
-						  <td>4th</td>
-						  <td>3.00</td>
-						  <td>
-						  	<a href="edit.php"><i name="edit"  class="fa fa-pencil btn btn-warning" > Edit</i></a>
-						  	<a href="delete.php"><i name="delete"  class="fa fa-trash-o btn btn-danger" > Delete</i></a>
-						  </td>
-						</tr>
-						
+						<?php endfor; ?>
 					  </tbody>
 					</table>
                 </div>
@@ -80,6 +78,9 @@
 	
 		<!-- footer	-->
 		
+		
+		
 		<?php
 			include('common/footer.php');
 		?>
+		
