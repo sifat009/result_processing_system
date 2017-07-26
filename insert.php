@@ -8,7 +8,7 @@
 		$courses = [$_REQUEST['course_id1'],$_REQUEST['course_id2'],$_REQUEST['course_id3'],$_REQUEST['course_id4'],$_REQUEST['course_id5']];
 		$credits = [$_REQUEST['credit1'],$_REQUEST['credit2'],$_REQUEST['credit3'],$_REQUEST['credit4'],$_REQUEST['credit5']];
 		$grades = [$_REQUEST['grade1'],$_REQUEST['grade2'],$_REQUEST['grade3'],$_REQUEST['grade4'],$_REQUEST['grade5']];
-		$j = 1;
+		$j = 0;
 		while($j < count($courses)){
 			$query = "INSERT INTO courses ( reg_no, dept_name, course_id, credit, grade, semester) VALUES ($reg_no, '$dept', '$courses[$j]', $credits[$j], $grades[$j], '$semester')";
 			$statement = $db->prepare($query);
@@ -34,6 +34,8 @@
 		$query = "INSERT INTO students(reg_no, semester, dept_name) VALUES ($reg_no, '$semester', '$dept')";
 		$statement = $db->prepare($query);
 		$statement->execute() or die("Coundn't connect");
+		
+		header('location: viewall.php');
 		
 	}
 ?>
